@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lbp_server>
+    <name>JeffProGamer LBP Server</name>
+    <address>jeffprogamer.github.io</address>
+    <port>10000</port>
+    <version>1.0</version>
+</lbp_server>
