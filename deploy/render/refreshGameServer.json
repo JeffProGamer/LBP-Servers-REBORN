@@ -1,0 +1,12 @@
+{
+  "Version": 29,
+  "InstanceName": "LBP Reborn",
+  "WebExternalUrl": "https://lbpreborn.onrender.com",
+  "GameConfigStorageUrl": "https://lbpreborn.onrender.com/lbp",
+  "PermitAllLogins": true,
+  "PermitPsnLogin": true,
+  "UseTicketVerification": true,
+  "AllowUsersToUseIpAuthentication": false,
+  "EnforcePatchwork": true,
+  "UseDeflateCompression": true
+}

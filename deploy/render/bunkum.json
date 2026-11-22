@@ -1,0 +1,8 @@
+{
+  "Version": 4,
+  "ExternalUrl": "https://lbpreborn.onrender.com",
+  "ListenHost": "0.0.0.0",
+  "ListenPort": 10000,
+  "ThreadCount": 4,
+  "UseForwardedIp": true
+}

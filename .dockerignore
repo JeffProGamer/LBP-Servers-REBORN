@@ -1,0 +1,7 @@
+# Only public deployment configuration belongs in this build context.
+**
+!Dockerfile
+!deploy/
+!deploy/render/
+!deploy/render/bunkum.json
+!deploy/render/refreshGameServer.json
