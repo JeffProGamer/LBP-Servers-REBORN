@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-ef": {
+      "version": "8.0.6",
+      "commands": [
+        "dotnet-ef"
+      ]
+    },
+    "dotnet-trace": {
+      "version": "8.0.452401",
+      "commands": [
+        "dotnet-trace"
+      ]
+    }
+  }
+}

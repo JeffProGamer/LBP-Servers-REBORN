@@ -1,0 +1,191 @@
+@page "/"
+@using LBPUnion.ProjectLighthouse.Configuration
+@using LBPUnion.ProjectLighthouse.Extensions
+@using LBPUnion.ProjectLighthouse.Localization.StringLists
+@using LBPUnion.ProjectLighthouse.Servers.Website.Extensions
+@using LBPUnion.ProjectLighthouse.Types.Entities.Level
+@model LBPUnion.ProjectLighthouse.Servers.Website.Pages.LandingPage
+
+@{
+    Layout = "Layouts/BaseLayout";
+    Model.ShowTitleInPage = false;
+
+    bool isMobile = Request.IsMobile();
+    string language = Model.GetLanguage();
+    string timeZone = Model.GetTimeZone();
+
+    var user = Model.User;
+    var playersOnline = Model.PlayersOnline;
+    var announcement = Model.LatestAnnouncement;
+    var teamPicks = Model.LatestTeamPicks ?? new List<SlotEntity>();
+    var newestLevels = Model.NewestLevels ?? new List<SlotEntity>();
+    string serverName = ServerConfiguration.Instance.Customization.ServerName;
+}
+
+<section class="website-hero">
+    <div class="website-hero-copy">
+        <img src="~/@(ServerConfiguration.Instance.WebsiteConfiguration.PrideEventEnabled && DateTime.Now.Month == 6 ? "logo-pride.png" : "logo-color.png")"
+             alt=""
+             class="website-hero-logo" />
+        <div>
+            <p class="eyebrow">@Model.Translate(LandingPageStrings.Welcome, serverName)</p>
+            <h1>@serverName</h1>
+            @if (!string.IsNullOrWhiteSpace(ServerConfiguration.Instance.Customization.ServerDescription))
+            {
+                <p class="website-hero-description">@ServerConfiguration.Instance.Customization.ServerDescription</p>
+            }
+        </div>
+    </div>
+
+    <div class="website-hero-metrics" aria-label="Server activity">
+        <div>
+            <strong>@playersOnline.Count</strong>
+            <span>@(playersOnline.Count == 1 ? "player online" : "players online")</span>
+        </div>
+        <div>
+            <strong>@teamPicks.Count</strong>
+            <span>team picks</span>
+        </div>
+        <div>
+            <strong>@newestLevels.Count</strong>
+            <span>new levels</span>
+        </div>
+    </div>
+</section>
+
+@if (user != null && Model.PendingAuthAttempts > 0)
+{
+    <section class="website-alert warning">
+        <i class="warning sign icon"></i>
+        <div>
+            <strong>@Model.Translate(LandingPageStrings.AuthAttemptsPending, Model.PendingAuthAttempts)</strong>
+            <a href="/authentication">Review authentication activity</a>
+        </div>
+    </section>
+}
+
+@if (announcement != null)
+{
+    <section class="website-panel announcement-panel">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">Latest update</span>
+                <h2><i class="bullhorn icon"></i> Announcement</h2>
+            </div>
+            @if (announcement.Publisher != null)
+            {
+                <a href="~/user/@announcement.Publisher.UserId">@announcement.Publisher.Username</a>
+            }
+        </div>
+
+        @{
+            string content = announcement.Content.Length > 320
+                ? $"{announcement.Content[..320]}..."
+                : announcement.Content;
+        }
+        <p>@content</p>
+
+        @if (announcement.Content.Length > 320)
+        {
+            <a href="/notifications" class="text-action">Read the full announcement</a>
+        }
+    </section>
+}
+
+<section class="website-panel online-panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-kicker">Now playing</span>
+            <h2><i class="gamepad icon"></i> Online Players</h2>
+        </div>
+        <span class="count-pill">@playersOnline.Count</span>
+    </div>
+
+    @if (playersOnline.Any())
+    {
+        <div class="online-users-list">
+            @foreach (var onlineUser in playersOnline)
+            {
+                @await onlineUser.ToLink(Html, ViewData, language, timeZone, true)
+            }
+        </div>
+    }
+    else
+    {
+        <p class="empty-copy">No players are online right now.</p>
+    }
+</section>
+
+<div class="website-dashboard-grid">
+    <section class="website-panel">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">Curated</span>
+                <h2><i class="star icon"></i> Team Picks</h2>
+            </div>
+            <a href="/slots/0" class="text-action">View levels</a>
+        </div>
+
+        @if (teamPicks.Any())
+        {
+            <div class="website-level-list">
+                @foreach (var slot in teamPicks.Take(3))
+                {
+                    @await slot.ToHtml(Html, ViewData, user, $"~/slot/{slot.SlotId}", language, timeZone, isMobile, true, true)
+                }
+            </div>
+        }
+        else
+        {
+            <p class="empty-copy">No team picks have been published yet.</p>
+        }
+    </section>
+
+    <section class="website-panel">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">Fresh uploads</span>
+                <h2><i class="globe americas icon"></i> @Model.Translate(LandingPageStrings.NewestLevels)</h2>
+            </div>
+            <a href="/slots/0" class="text-action">Browse all</a>
+        </div>
+
+        @if (newestLevels.Any())
+        {
+            <div class="website-level-list">
+                @foreach (var slot in newestLevels.Take(3))
+                {
+                    @await slot.ToHtml(Html, ViewData, user, $"~/slot/{slot.SlotId}", language, timeZone, isMobile, true, true)
+                }
+            </div>
+        }
+        else
+        {
+            <p class="empty-copy">No levels have been uploaded yet.</p>
+        }
+    </section>
+
+    <nav class="website-panel action-panel" aria-label="Quick links">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">Shortcuts</span>
+                <h2><i class="bolt icon"></i> Quick Links</h2>
+            </div>
+        </div>
+
+        @if (user == null)
+        {
+            <a href="/login" class="website-action primary"><i class="sign in icon"></i> Sign In</a>
+            @if (ServerConfiguration.Instance.Authentication.RegistrationEnabled)
+            {
+                <a href="/register" class="website-action"><i class="user plus icon"></i> Create Account</a>
+            }
+        }
+        else
+        {
+            <a href="/slots/0" class="website-action primary"><i class="globe americas icon"></i> Browse Levels</a>
+            <a href="/user/@user.UserId" class="website-action"><i class="user circle icon"></i> My Profile</a>
+        }
+        <a href="/users/0" class="website-action"><i class="users icon"></i> Find Players</a>
+    </nav>
+</div>

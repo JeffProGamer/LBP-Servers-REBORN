@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+  </resheader>
+  <data name="welcome" xml:space="preserve">
+        <value>{0} में आपका स्वागत है!</value>
+        <comment>A greeting on the main page of the website.</comment>
+    </data>
+  <data name="loggedInAs" xml:space="preserve">
+        <value>स्वागत है, {0}.</value>
+        <comment>A greeting on the main page of the website.</comment>
+    </data>
+  <data name="users_none" xml:space="preserve">
+        <value>यहां कोई भी व्यक्ति ऑनलाइन नहीं है. ब्रेक क्यों नहीं लेते?</value>
+        <comment>A greeting on the main page of the website.</comment>
+    </data>
+  <data name="users_single" xml:space="preserve">
+        <value>यहाँ 1 व्यक्ति इस समय ऑनलाइन है:</value>
+        <comment>A greeting on the main page of the website.</comment>
+    </data>
+  <data name="users_multiple" xml:space="preserve">
+        <value>वर्तमान में {0} लोग ऑनलाइन हैं:</value>
+        <comment>A greeting on the main page of the website.</comment>
+    </data>
+  <data name="authAttemptsPending" xml:space="preserve">
+        <value>आपके पास {0} प्रमाणीकरण प्रयास लंबित हैं। उन्हें देखने के लिए यहां क्लिक करें।</value>
+        <comment>A greeting on the main page of the website.</comment>
+    </data>
+  <data name="newest_levels" xml:space="preserve">
+        <value>नवीनतम स्तर</value>
+    </data>
+  <data name="latest_team_picks" xml:space="preserve">
+        <value>नवीनतम टीम का चयन</value>
+    </data>
+</root>

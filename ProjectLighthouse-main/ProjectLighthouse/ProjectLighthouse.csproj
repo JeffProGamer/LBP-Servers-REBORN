@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Version>1.0.0</Version>
+        <InformationalVersion>1.0.0</InformationalVersion>
+        <AssemblyName>LBPUnion.ProjectLighthouse</AssemblyName>
+        <RootNamespace>LBPUnion.ProjectLighthouse</RootNamespace>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+        <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+        <PackageReference Include="DistributedLock.MySql" Version="1.0.2" />
+        <PackageReference Include="DistributedLock.FileSystem" Version="1.0.1" />
+        <PackageReference Include="Pfim" Version="0.11.3" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+        <PackageReference Include="Discord.Net.Webhook" Version="3.17.4" />
+        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.12" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.12" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+        <PackageReference Include="Redis.OM" Version="1.0.1" />
+        <PackageReference Include="SharpZipLib" Version="1.4.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+        <PackageReference Include="YamlDotNet" Version="16.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ProjectLighthouse.Localization\ProjectLighthouse.Localization.csproj" />
+    </ItemGroup>
+</Project>

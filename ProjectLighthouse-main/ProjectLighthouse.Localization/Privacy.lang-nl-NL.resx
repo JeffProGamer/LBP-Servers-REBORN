@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="enable_comments" xml:space="preserve">
+        <value>Activeer reacties op uw profiel.</value>
+    </data>
+  <data name="disable_comments" xml:space="preserve">
+        <value>Reacties op uw profiel uitschakelen.</value>
+    </data>
+  <data name="no_blocked_users" xml:space="preserve">
+        <value>Je hebt geen enkele gebruiker geblokkeerd.</value>
+    </data>
+  <data name="blocked_users" xml:space="preserve">
+        <value>U heeft {0} gebruiker(s) geblokkeerd.</value>
+    </data>
+  <data name="privacy_all" xml:space="preserve">
+        <value>Deel uw {0} met iedereen!</value>
+    </data>
+  <data name="privacy_psn" xml:space="preserve">
+        <value>Deel alleen uw {0} met gebruikers die zijn aangemeld op de website of in het spel spelen.</value>
+    </data>
+  <data name="privacy_game" xml:space="preserve">
+        <value>Deel alleen uw {0} met gebruikers die in het spel spelen.</value>
+    </data>
+</root>

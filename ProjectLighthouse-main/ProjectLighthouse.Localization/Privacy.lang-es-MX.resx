@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="enable_comments" xml:space="preserve">
+        <value>Habilitar comentarios sobre su perfil.</value>
+    </data>
+  <data name="disable_comments" xml:space="preserve">
+        <value>Desactivar comentarios sobre su perfil.</value>
+    </data>
+  <data name="no_blocked_users" xml:space="preserve">
+        <value>No has bloqueado ningún usuario.</value>
+    </data>
+  <data name="blocked_users" xml:space="preserve">
+        <value>Has bloqueado un usuario {0}.</value>
+    </data>
+  <data name="privacy_all" xml:space="preserve">
+        <value>¡Comparte tu {0} con todos!</value>
+    </data>
+  <data name="privacy_psn" xml:space="preserve">
+        <value>Comparte solo tu {0} con usuarios que hayan iniciado sesión en el sitio web o que estén jugando en el juego.</value>
+    </data>
+  <data name="privacy_game" xml:space="preserve">
+        <value>Comparte solo tu {0} con los usuarios que están jugando en el juego.</value>
+    </data>
+</root>

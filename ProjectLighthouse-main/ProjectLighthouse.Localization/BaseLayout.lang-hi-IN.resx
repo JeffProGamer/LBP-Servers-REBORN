@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+  </resheader>
+  <data name="header_users" xml:space="preserve">
+        <value>उपयोगकर्ताओं</value>
+        <comment>A button on the header that takes you to the user listing.</comment>
+    </data>
+  <data name="header_photos" xml:space="preserve">
+        <value>तस्वीरें</value>
+        <comment>A button on the header that takes you to a list of user-uploaded photos.</comment>
+    </data>
+  <data name="header_slots" xml:space="preserve">
+        <value>स्तरों</value>
+        <comment>A button on the header that takes you to a list of user-uploaded levels. Levels are internally referred to as "slots".</comment>
+    </data>
+  <data name="header_authentication" xml:space="preserve">
+        <value>प्रमाणीकरण</value>
+        <comment>A button on the header that takes you to a list of authentication attempts.</comment>
+    </data>
+  <data name="header_login" xml:space="preserve">
+        <value>लॉग इन करें</value>
+        <comment>A button on the header that lets you log in.</comment>
+    </data>
+  <data name="header_loginRegister" xml:space="preserve">
+        <value>लॉगइन / रजिस्टर करें</value>
+        <comment>A button on the header that lets you log in or register.</comment>
+    </data>
+  <data name="header_adminPanel" xml:space="preserve">
+        <value>व्यवस्थापक</value>
+        <comment>A header link that takes you to the admin panel if available.</comment>
+    </data>
+  <data name="header_logout" xml:space="preserve">
+        <value>लॉग आउट</value>
+        <comment>A shortcut to log you out of your account.</comment>
+    </data>
+  <data name="header_modPanel" xml:space="preserve">
+        <value>मॉड पैनल</value>
+    </data>
+  <data name="generated_by" xml:space="preserve">
+        <value>{0} द्वारा जनरेट किया गया पेज</value>
+    </data>
+  <data name="generated_modified" xml:space="preserve">
+        <value>यह पृष्ठ प्रोजेक्ट लाइटहाउस के संशोधित संस्करण का उपयोग करके बनाया गया था। कृपया सुनिश्चित करें कि आप इस इंस्टेंस का उपयोग करने वाले किसी भी उपयोगकर्ता को स्रोत कोड का उचित रूप से खुलासा कर रहे हैं।</value>
+    </data>
+  <data name="js_warn" xml:space="preserve">
+        <value>हालाँकि हमारा इरादा जितना संभव हो उतना कम जावास्क्रिप्ट रखने का है, लेकिन हम गारंटी नहीं दे सकते कि इसके बिना सब कुछ काम करेगा। हम अनुशंसा करते हैं कि आप प्रोजेक्ट लाइटहाउस के लिए जावास्क्रिप्ट को श्वेतसूची में शामिल करें।</value>
+    </data>
+  <data name="js_warn_title" xml:space="preserve">
+        <value>जावास्क्रिप्ट सक्षम नहीं है.</value>
+    </data>
+  <data name="license_warn_title" xml:space="preserve">
+        <value>संभावित लाइसेंस उल्लंघन</value>
+    </data>
+  <data name="license_warn_1" xml:space="preserve">
+        <value>यह इंस्टेंस एक सार्वजनिक इंस्टेंस है जिसे बिना प्रकाशित किए संशोधित किया गया है। आप {0} का उल्लंघन कर रहे हो सकते हैं।</value>
+    </data>
+  <data name="license_warn_2" xml:space="preserve">
+        <value>यदि आपको लगता है कि यह एक त्रुटि है, तो कृपया हमारे {1}समस्या ट्रैकर{2} पर विवरण में सर्वर स्रोत कोड के मूल से चलाए गए {0} के आउटपुट के साथ एक समस्या बनाएँ।</value>
+    </data>
+  <data name="license_warn_3" xml:space="preserve">
+        <value>यदि नहीं, तो कृपया स्रोत कोड को अपने उपयोगकर्ताओं के लिए सुलभ स्थान पर प्रकाशित करें।</value>
+    </data>
+  <data name="read_only_warn_title" xml:space="preserve">
+        <value>रीड-ओनली मोड</value>
+    </data>
+  <data name="read_only_warn" xml:space="preserve">
+        <value>यह इंस्टेंस अभी केवल पढ़ने के लिए मोड में है। केवल पढ़ने के लिए मोड अक्षम होने तक लेवल और फोटो अपलोड, टिप्पणियाँ, समीक्षाएँ और कुछ प्रोफ़ाइल परिवर्तन प्रतिबंधित रहेंगे।</value>
+    </data>
+</root>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="username_invalid" xml:space="preserve">
+        <value>Поле імені користувача порожнє.</value>
+    </data>
+  <data name="username_taken" xml:space="preserve">
+        <value>Введене ім'я користувача вже зайнято.</value>
+    </data>
+  <data name="password_invalid" xml:space="preserve">
+        <value>Поле пароля є обов'язковим.</value>
+    </data>
+  <data name="password_doesnt_match" xml:space="preserve">
+        <value>Паролі не співпадають!</value>
+    </data>
+  <data name="captcha_failed" xml:space="preserve">
+        <value>Необхідно правильно ввести капчу.</value>
+    </data>
+  <data name="email_taken" xml:space="preserve">
+        <value>Введену адресу електронної пошти вже зайнято.</value>
+    </data>
+  <data name="email_invalid" xml:space="preserve">
+        <value>Поле адреси електронної пошти є обов’язковим.</value>
+    </data>
+  <data name="action_no_permission" xml:space="preserve">
+        <value>You don't have permissions to perform this action.</value>
+    </data>
+</root>

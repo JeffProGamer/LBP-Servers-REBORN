@@ -1,0 +1,95 @@
+@page "/admin/users/{pageNumber:int}"
+@using LBPUnion.ProjectLighthouse.Types.Entities.Profile
+@using LBPUnion.ProjectLighthouse.Types.Users
+@model LBPUnion.ProjectLighthouse.Servers.Website.Pages.Admin.AdminPanelUsersPage
+
+@{
+    Layout = "Layouts/BaseLayout";
+    Model.Title = "Users";
+}
+
+<p>There are currently @Model.UserCount users registered to your instance.</p>
+<p><b>Note:</b> Users are ordered by their permissions, then by most-recent-first.</p>
+
+<form action="/admin/users/0">
+    <div class="ui icon input">
+        <input type="text" autocomplete="off" name="name" placeholder="Search users..." value="@Model.SearchValue">
+        <i class="search icon"></i>
+    </div>
+</form>
+
+<div class="ui divider"></div>
+
+<div class="ui grid">
+    @foreach (UserEntity user in Model.Users)
+    {
+        string color;
+        string subtitle;
+
+        switch (user.PermissionLevel)
+        {
+            case PermissionLevel.Banned:
+            {
+                color = "grey";
+                subtitle = $"Banned user! Reason: {user.BannedReason}";
+                break;
+            }
+            case PermissionLevel.Moderator:
+            {
+                color = "orange";
+                subtitle = "Moderator";
+                break;
+            }
+            case PermissionLevel.Administrator:
+            {
+                color = "red";
+                subtitle = "Admin";       
+                break;
+            }
+            case PermissionLevel.Default:
+            default:
+            {
+                color = "blue";
+                subtitle = "User";
+                break;
+            }
+        }
+
+        subtitle += $" (id: {user.UserId})";
+
+        <div class="eight wide column">
+            <div class="ui @color segment">
+                <h2>
+                    <a href="/user/@user.UserId">@user.Username</a>
+                </h2>
+                <h3>@subtitle</h3>
+                <form method="post" action="/admin/user/@user.UserId/setPermissionLevel">
+                    <div class="ui right action input">
+                        <select name="role" class="ui selection dropdown">
+                            @foreach (PermissionLevel level in Enum.GetValues<PermissionLevel>())
+                            {
+                                if (level < 0) continue;
+                                string selected = level == user.PermissionLevel ? " selected" : "";
+                        
+                                <option value="@((int)level)"@selected>@level.ToString()</option>
+                            }
+                        </select>
+                        <input type="submit" class="ui green button" value="Apply"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<br />
+
+@if (Model.PageNumber != 0)
+{
+    <a href="/admin/users/@(Model.PageNumber - 1)@(Model.SearchValue?.Length == 0 ? "" : "?name=" + Model.SearchValue)">Previous Page</a>
+}
+@(Model.PageNumber + 1) / @(Model.PageAmount)
+@if (Model.PageNumber < Model.PageAmount - 1)
+{
+    <a href="/admin/users/@(Model.PageNumber + 1)@(Model.SearchValue?.Length == 0 ? "" : "?name=" + Model.SearchValue)">Next Page</a>
+}

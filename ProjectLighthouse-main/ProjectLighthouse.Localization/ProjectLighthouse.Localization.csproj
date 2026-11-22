@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>LBPUnion.ProjectLighthouse.Localization</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="LandingPage.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>LandingPage.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="General.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>General.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="LoggedOut.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>LoggedOut.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Status.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Status.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Register.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Register.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Error.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Error.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Profile.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Profile.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModPanel.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>ModPanel.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="TwoFactor.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>TwoFactor.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Moderation.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Moderation.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Privacy.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Privacy.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

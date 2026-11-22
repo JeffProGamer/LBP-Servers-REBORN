@@ -1,0 +1,24 @@
+@model LBPUnion.ProjectLighthouse.Servers.Website.Types.AdminPanelStatistic
+
+<div class="three wide column admin-stat-column">
+    <div class="ui center aligned blue segment admin-stat-card">
+        @if (Model.ViewAllEndpoint != null)
+        {
+            <h2>
+                <a href="@Model.ViewAllEndpoint">@Model.StatisticNamePlural</a>
+            </h2>
+        }
+        else
+        {
+            <h2>@Model.StatisticNamePlural</h2>
+        }
+        @if (Model.SecondStatistic == null)
+        {
+            <h3>@Model.Count</h3>
+        }
+        else
+        {
+            <h3>@Model.Count / @Model.SecondStatistic</h3>
+        }
+    </div>
+</div>

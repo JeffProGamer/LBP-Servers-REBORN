@@ -1,0 +1,93 @@
+@page "/login"
+@using LBPUnion.ProjectLighthouse.Configuration
+@using LBPUnion.ProjectLighthouse.Localization.StringLists
+@model LBPUnion.ProjectLighthouse.Servers.Website.Pages.Login.LoginForm
+
+@{
+    Layout = "Layouts/BaseLayout";
+    Model.Title = Model.Translate(GeneralStrings.LogIn);
+    Model.ShowTitleInPage = false;
+}
+
+<script src="https://geraintluff.github.io/sha256/sha256.min.js"></script>
+
+<script>
+    function onSubmit(form) {
+        if (document.referrer !== null && document.referrer !== "") {
+            const url = new URL(document.referrer);
+            if (url.pathname !== "/logout" && url.pathname !== "/login")
+                document.getElementById("redirect").value = url.pathname;
+        }
+        
+        const passwordInput = document.getElementById("password");
+        const passwordSubmit = document.getElementById("password-submit");
+        
+        passwordSubmit.value = sha256(passwordInput.value);
+        return true;
+    }
+</script>
+
+<div class="ui middle aligned center aligned grid auth-shell">
+    <form class="ui form" onsubmit="return onSubmit(this)" method="post">
+        @if (!string.IsNullOrWhiteSpace(Model.Error))
+        {
+            @await Html.PartialAsync("Partials/ErrorModalPartial", (Model.Translate(GeneralStrings.Error), Model.Error), ViewData)
+        }
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="redirect" name="redirect">
+
+        <div class="column auth-card">
+            <h2 class="ui black image header centered">
+                <img src="~/@(ServerConfiguration.Instance.WebsiteConfiguration.PrideEventEnabled && DateTime.Now.Month == 6 ? "logo-pride.png" : "logo-color.png")"
+                     alt="Instance logo"
+                     class="image auth-logo" />
+                <div class="content">
+                    @Model.Title
+                </div>
+            </h2>
+
+            <div class="field">
+                @{
+                    string username = ServerConfiguration.Instance.Mail.MailEnabled ? Model.Translate(GeneralStrings.Email) : Model.Translate(GeneralStrings.Username);
+                }
+                <label>@username</label>
+                <div class="ui left icon input">
+                    <input type="text" name="username" id="text" placeholder="@username">
+                    <i class="user icon"></i>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>@Model.Translate(GeneralStrings.Password)</label>
+                <div class="ui left icon input">
+                    <input type="password" id="password" placeholder="@Model.Translate(GeneralStrings.Password)">
+                    <input type="hidden" id="password-submit" name="password">
+                    <i class="lock icon"></i>
+                </div>
+            </div>
+
+            @if (ServerConfiguration.Instance.Captcha.CaptchaEnabled)
+            {
+                @await Html.PartialAsync("Partials/CaptchaPartial")
+                <div class="ui divider fitted hidden"></div>
+            }
+            <input type="submit" value="@Model.Translate(GeneralStrings.LogIn)" id="submit" class="ui fluid blue button">
+
+            <a href="/passwordResetRequest">
+                <div class="ui fluid button auth-link-button">
+                    @Model.Translate(GeneralStrings.ForgotPassword)
+                </div>
+            </a>
+
+            @if (ServerConfiguration.Instance.Authentication.RegistrationEnabled)
+            {
+                <div class="ui divider"></div>
+                <a href="/register" style="text-align: center;">
+                    <div class="ui fluid button auth-link-button">
+                        @Model.Translate(GeneralStrings.Register)
+                    </div>
+                </a>
+            }
+        </div>
+    </form>
+</div>
