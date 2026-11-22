@@ -7,7 +7,7 @@ RUN apt-get update \
 WORKDIR /src
 RUN git init . \
     && git remote add origin https://github.com/JeffProGamer/Refresh.git \
-    && git fetch --depth 1 origin 738a79b89e721057673cc300ffe3c3f654d03297 \
+    && git fetch --depth 1 origin main \
     && git checkout --detach FETCH_HEAD \
     && git submodule update --init --recursive --depth 1
 RUN dotnet publish Refresh.GameServer/Refresh.GameServer.csproj \
