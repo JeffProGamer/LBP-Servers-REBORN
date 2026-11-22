@@ -1,0 +1,66 @@
+{
+  "revision": 626,
+  "branch": {
+    "id": "LD",
+    "revision": 8
+  },
+  "type": "PLAN",
+  "resource": {
+    "things": [
+      {
+        "UID": 989,
+        "planGUID": 33142,
+        "parent": null,
+        "group": null,
+        "PScript": {
+          "instance": {
+            "script": {
+              "value": "c8a8d8eddcb9819ce1a318bdc4854900ce6a8280",
+              "type": "SCRIPT"
+            },
+            "instanceLayout": {
+              "fields": [],
+              "instanceSize": 0
+            }
+          }
+        }
+      }
+    ],
+    "inventoryData": {
+      "dateAdded": 0,
+      "levelUnlockSlotID": "NONE",
+      "highlightSound": null,
+      "colour": -1,
+      "type": [
+        "USER_STICKER"
+      ],
+      "subType": 0,
+      "titleKey": 0,
+      "descriptionKey": 0,
+      "userCreatedDetails": {
+        "name": "LBPReborn patcher",
+        "description": "By using this item, your game will connect to LBPReborn servers! Only use this item once per boot."
+      },
+      "creationHistory": null,
+      "icon": {
+        "value": "f7b21ff7dc51332ea574960aa11fa6d2b2bbb779",
+        "type": "TEXTURE"
+      },
+      "photoData": null,
+      "eyetoyData": null,
+      "locationIndex": -1,
+      "categoryIndex": -1,
+      "primaryIndex": 0,
+      "lastUsed": 0,
+      "numUses": 0,
+      "fluffCost": 0,
+      "allowEmit": false,
+      "shareable": false,
+      "copyright": false,
+      "creator": "LBP Reborn",
+      "toolType": "NONE",
+      "location": 0,
+      "category": 0
+    }
+  }
+}

@@ -1,28 +1,14 @@
 {
-  "revision": 1016,
+  "revision": 35128313,
   "type": "PLAN",
   "resource": {
+    "isUsedForStreaming": false,
     "things": [
       {
         "UID": 2,
         "planGUID": null,
         "parent": null,
         "group": null,
-        "PScriptName": {
-          "name": "Lbpwn"
-        },
-        "PScript": {
-          "instance": {
-            "script": {
-              "value": "c8a8d8eddcb9819ce1a318bdc4854900ce6a8280",
-              "type": "SCRIPT"
-            },
-            "instanceLayout": {
-              "fields": [],
-              "instanceSize": 0
-            }
-          }
-        },
         "PBody": {
           "posVel": [
             0.0,
@@ -56,10 +42,7 @@
           }
         },
         "PGeneratedMesh": {
-          "gfxMaterial": {
-            "value": 11166,
-            "type": "GFX_MATERIAL"
-          },
+          "gfxMaterial": null,
           "bevel": null,
           "uvOffset": [
             0.0,
@@ -70,7 +53,16 @@
           "planGUID": null,
           "visibilityFlags": 3,
           "textureAnimationSpeed": 1.0,
-          "textureAnimationSpeedOff": 1.0
+          "textureAnimationSpeedOff": 1.0,
+          "noBevel": false,
+          "sharded": false,
+          "includeSides": true,
+          "slideImpactDamping": 50,
+          "slideSteer": 100,
+          "slideSpeed": 50
+        },
+        "PScriptName": {
+          "name": "Lbpwn"
         },
         "PStickers": {
           "decals": [
@@ -113,6 +105,18 @@
           ],
           "eyetoyData": []
         },
+        "PScript": {
+          "instance": {
+            "script": {
+              "value": "c8a8d8eddcb9819ce1a318bdc4854900ce6a8280",
+              "type": "SCRIPT"
+            },
+            "instanceLayout": {
+              "fields": [],
+              "instanceSize": 0
+            }
+          }
+        },
         "PShape": {
           "polygon": {
             "vertices": [
@@ -142,10 +146,7 @@
               4
             ]
           },
-          "material": {
-            "value": 717,
-            "type": "MATERIAL"
-          },
+          "material": null,
           "oldMaterial": null,
           "thickness": 0.01,
           "massDepth": 0.2,
@@ -164,7 +165,21 @@
           "grabFilter": 0,
           "colorOpacity": 100,
           "colorOffOpacity": 100,
-          "canCollect": false
+          "colorShininess": 0,
+          "canCollect": false,
+          "ghosty": false,
+          "defaultClimbable": false,
+          "currentlyClimbable": false,
+          "headDucking": false,
+          "isLBP2Shape": false,
+          "isStatic": false,
+          "collidableSackboy": false,
+          "partOfPowerUp": false,
+          "cameraExcluderIsSticky": false,
+          "ethereal": false,
+          "zBias": 0,
+          "fireDensity": 0,
+          "fireLifetime": 0
         },
         "PGroup": {
           "planDescriptor": null,
@@ -180,7 +195,7 @@
       "dateAdded": 1795341274,
       "levelUnlockSlotID": "NONE",
       "highlightSound": null,
-      "colour": 855060,
+      "colour": 16777215,
       "type": [
         "STICKER",
         "USER_STICKER"
@@ -200,33 +215,12 @@
         "value": "f7b21ff7dc51332ea574960aa11fa6d2b2bbb779",
         "type": "TEXTURE"
       },
-      "photoData": {
-        "icon": {
-          "value": "f7b21ff7dc51332ea574960aa11fa6d2b2bbb779",
-          "type": "TEXTURE"
-        },
-        "sticker": {
-          "value": "f7b21ff7dc51332ea574960aa11fa6d2b2bbb779",
-          "type": "TEXTURE"
-        },
-        "photoMetadata": {
-          "photo": {
-            "value": "f7b21ff7dc51332ea574960aa11fa6d2b2bbb779",
-            "type": "TEXTURE"
-          },
-          "level": "USER_CREATED_STORED_LOCAL:55",
-          "levelName": "",
-          "levelHash": "9d33fb5b242619a0caa5b2a4c766875b6ca10613",
-          "users": [],
-          "timestamp": 1398205124
-        },
-        "painting": null
-      },
+      "photoData": null,
       "eyetoyData": null,
       "locationIndex": -1,
       "categoryIndex": -1,
       "primaryIndex": 0,
-      "creator": "LBP Reborn",
+      "creator": "jeff_pro_gamer",
       "toolType": "NONE",
       "flags": 0,
       "location": 0,

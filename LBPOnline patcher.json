@@ -1,0 +1,66 @@
+{
+  "revision": 626,
+  "branch": {
+    "id": "LD",
+    "revision": 8
+  },
+  "type": "PLAN",
+  "resource": {
+    "things": [
+      {
+        "UID": 989,
+        "planGUID": 33142,
+        "parent": null,
+        "group": null,
+        "PScript": {
+          "instance": {
+            "script": {
+              "value": "a15f684e801516532279fb9148d62e16fc0710de",
+              "type": "SCRIPT"
+            },
+            "instanceLayout": {
+              "fields": [],
+              "instanceSize": 0
+            }
+          }
+        }
+      }
+    ],
+    "inventoryData": {
+      "dateAdded": 0,
+      "levelUnlockSlotID": "NONE",
+      "highlightSound": null,
+      "colour": -1,
+      "type": [
+        "USER_STICKER"
+      ],
+      "subType": 0,
+      "titleKey": 0,
+      "descriptionKey": 0,
+      "userCreatedDetails": {
+        "name": "LBPOnline patcher",
+        "description": "By using this item, your game will connect to LBPOnline servers! Only use this item once per boot."
+      },
+      "creationHistory": null,
+      "icon": {
+        "value": "812449d18f017bcdc6b25169f4f54a7d4c19e1b5",
+        "type": "TEXTURE"
+      },
+      "photoData": null,
+      "eyetoyData": null,
+      "locationIndex": -1,
+      "categoryIndex": -1,
+      "primaryIndex": 0,
+      "lastUsed": 0,
+      "numUses": 0,
+      "fluffCost": 0,
+      "allowEmit": false,
+      "shareable": false,
+      "copyright": false,
+      "creator": "Epic",
+      "toolType": "NONE",
+      "location": 0,
+      "category": 0
+    }
+  }
+}
