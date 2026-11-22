@@ -122,7 +122,8 @@ public final class BuildSticker {
     static final Revision REVISION = new Revision(REV_HEAD, REV_BRANCH, REV_BRANCH_REV);
     static final byte COMPRESSION = 0;
 
-    static String domain = "lbpreborn.example.com";
+    /** Set from argv[0] or $LBPWN_DOMAIN in main(); never a baked-in placeholder. */
+    static String domain = null;
     static boolean keepHeaders = false;
 
     /* ====================== 1. addresses in the 1.28 EBOOT ====================== */
@@ -193,10 +194,25 @@ public final class BuildSticker {
      * ================================================================== */
 
     public static void main(String[] args) throws Exception {
-        if (args.length > 0 && !args[0].startsWith("-")) domain = normalizeDomain(args[0]);
         for (String a : args) if (a.equals("--keep-headers")) keepHeaders = true;
 
-        if (domain.isEmpty() || domain.contains("/") || domain.contains(":")) {
+        String arg = null;
+        for (String a : args) if (!a.startsWith("-")) { arg = a; break; }
+        if (arg == null) arg = System.getenv("LBPWN_DOMAIN");
+
+        if (arg == null || arg.trim().isEmpty()) {
+            System.err.println("ERROR: no server domain given.");
+            System.err.println();
+            System.err.println("  java -cp \"toolkit-0.1.jar;.\" BuildSticker <host> [--keep-headers]");
+            System.err.println("  java -cp \"toolkit-0.1.jar;.\" BuildSticker lbpreborn.onrender.com");
+            System.err.println();
+            System.err.println("  <host> must be a bare domain: no https://, no path, no port.");
+            System.err.println("  It can also be supplied via the LBPWN_DOMAIN environment variable.");
+            System.exit(2);
+        }
+        domain = normalizeDomain(arg);
+
+        if (domain.isEmpty() || domain.contains("/") || domain.contains(":") || !domain.contains(".")) {
             System.err.println("ERROR: domain must be a bare host, e.g. lbpreborn.onrender.com");
             System.err.println("       (no https://, no path, no port) - got: " + domain);
             System.exit(2);

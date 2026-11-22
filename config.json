@@ -14,5 +14,5 @@
   "displayWarningOnDeletingEntry": true,
   "displayWarningOnZeroEntry": true,
   "addToArchiveOnCopy": true,
-  "enable3D": false
+  "enable3D": true
 }

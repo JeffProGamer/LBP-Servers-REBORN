@@ -1,0 +1,24 @@
+# Java build artifacts
+*.class
+build.out
+
+# Generated resources (produced by build.cmd - do not commit)
+lbpwn.ff
+lbp_reborn_sticker.plan
+
+# Game save data / large proprietary assets - never commit
+CUSA*
+PS4/
+output_file.json
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.bak
+
+# Secrets - never commit a real domain cred or connection string
+.env
+*.env
+lighthouse.yml
