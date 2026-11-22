@@ -1,0 +1,18 @@
+{
+  "profiles": [
+    {
+      "name": "Default",
+      "archives": [],
+      "databases": [],
+      "saves": [],
+      "language": 0
+    }
+  ],
+  "currentProfile": 0,
+  "isDebug": false,
+  "useLegacyFileDialogue": false,
+  "displayWarningOnDeletingEntry": true,
+  "displayWarningOnZeroEntry": true,
+  "addToArchiveOnCopy": true,
+  "enable3D": false
+}
