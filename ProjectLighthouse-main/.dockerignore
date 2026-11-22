@@ -1,3 +1,19 @@
 **/data
 **/bin
 **/obj
+**/.vs
+**/.vscode
+**/.idea
+**/node_modules
+**/.render-verify
+.git
+**/*.user
+**/TestResults
+
+# local secrets / large non-source assets - never ship these in a build context
+.env
+**/.env
+**/appsettings.Development.json
+**/*.plan
+**/*.ff
+**/CUSA*.bin

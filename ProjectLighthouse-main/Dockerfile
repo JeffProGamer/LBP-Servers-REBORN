@@ -28,6 +28,14 @@ apk add --no-cache icu-libs su-exec tzdata
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
+# Defaults so the image also works on hosts that do not supply Compose-style env vars
+# (Render.com, Railway, Fly.io, a bare `docker run ...`).  Compose still overrides SERVER
+# per service, so this changes nothing for the existing docker-compose.yml.
+# Render injects PORT at runtime; docker-entrypoint.sh maps it onto gameApiListenUrl.
+ENV SERVER=GameApi \
+    ASPNETCORE_ENVIRONMENT=Production \
+    DOTNET_RUNNING_IN_CONTAINER=true
+
 # Copy build files
 COPY --from=build /ProjectLighthouse/out/publish /lighthouse/app
 COPY --from=build /ProjectLighthouse/ProjectLighthouse/StaticFiles /lighthouse/temp/StaticFiles
