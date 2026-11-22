@@ -1,0 +1,220 @@
+{
+  "revision": 1016,
+  "type": "PLAN",
+  "resource": {
+    "things": [
+      {
+        "UID": 2,
+        "planGUID": null,
+        "parent": null,
+        "group": null,
+        "PBody": {
+          "posVel": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "angVel": 0.0,
+          "frozen": 1,
+          "editingPlayer": null
+        },
+        "PPos": {
+          "thingOfWhichIAmABone": null,
+          "animHash": 0,
+          "worldPosition": {
+            "translation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "PGeneratedMesh": {
+          "gfxMaterial": {
+            "value": 11166,
+            "type": "GFX_MATERIAL"
+          },
+          "bevel": null,
+          "uvOffset": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "planGUID": null,
+          "visibilityFlags": 3,
+          "textureAnimationSpeed": 1.0,
+          "textureAnimationSpeedOff": 1.0
+        },
+        "PStickers": {
+          "decals": [
+            {
+              "texture": {
+                "value": "87397f94889ea75cbd09fda16e557759ea7def33",
+                "type": "TEXTURE"
+              },
+              "u": 0.0,
+              "v": 1.0,
+              "xvecu": 0.64,
+              "xvecv": 0.0,
+              "yvecu": 0.0,
+              "yvecv": 0.36,
+              "color": -1,
+              "type": "STICKER",
+              "metadataIndex": -1,
+              "placedBy": -1,
+              "playModeFrame": 0,
+              "scorchMark": false,
+              "plan": null
+            }
+          ],
+          "costumeDecals": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "eyetoyData": []
+        },
+        "PShape": {
+          "polygon": {
+            "vertices": [
+              [
+                -320.0,
+                180.0,
+                0.0
+              ],
+              [
+                320.0,
+                180.0,
+                0.0
+              ],
+              [
+                320.0,
+                -180.0,
+                0.0
+              ],
+              [
+                -320.0,
+                -180.0,
+                0.0
+              ]
+            ],
+            "requiresZ": false,
+            "loops": [
+              4
+            ]
+          },
+          "material": {
+            "value": 717,
+            "type": "MATERIAL"
+          },
+          "oldMaterial": null,
+          "thickness": 0.01,
+          "massDepth": 0.2,
+          "color": -1,
+          "brightness": 1.0,
+          "bevelSize": 0.01,
+          "behavior": 0,
+          "colorOff": -1,
+          "brightnessOff": 0.0,
+          "lethalType": "NOT",
+          "soundEnumOverride": "NONE",
+          "playerNumberColor": -1,
+          "flags": 7,
+          "stickiness": 0,
+          "grabbability": 0,
+          "grabFilter": 0,
+          "colorOpacity": 100,
+          "colorOffOpacity": 100,
+          "canCollect": false
+        },
+        "PGroup": {
+          "planDescriptor": null,
+          "creator": "CrimsonFang9",
+          "emitter": null,
+          "lifetime": 0,
+          "aliveFrames": 0,
+          "flags": 0
+        }
+      }
+    ],
+    "inventoryData": {
+      "dateAdded": 0,
+      "levelUnlockSlotID": "NONE",
+      "highlightSound": null,
+      "colour": 855060,
+      "type": [
+        "STICKER",
+        "USER_STICKER"
+      ],
+      "subType": 0,
+      "titleKey": 0,
+      "descriptionKey": 0,
+      "userCreatedDetails": {
+        "name": "ChickenMan picture",
+        "description": ""
+      },
+      "creationHistory": [
+        "CrimsonFang9"
+      ],
+      "icon": {
+        "value": "87397f94889ea75cbd09fda16e557759ea7def33",
+        "type": "TEXTURE"
+      },
+      "photoData": {
+        "icon": {
+          "value": "87397f94889ea75cbd09fda16e557759ea7def33",
+          "type": "TEXTURE"
+        },
+        "sticker": {
+          "value": "87397f94889ea75cbd09fda16e557759ea7def33",
+          "type": "TEXTURE"
+        },
+        "photoMetadata": {
+          "photo": {
+            "value": "89fa4a2e909c5978b331fc482c827a13a44e83d6",
+            "type": "TEXTURE"
+          },
+          "level": "USER_CREATED_STORED_LOCAL:55",
+          "levelName": "",
+          "levelHash": "9d33fb5b242619a0caa5b2a4c766875b6ca10613",
+          "users": [],
+          "timestamp": 1398205124
+        },
+        "painting": null
+      },
+      "eyetoyData": null,
+      "locationIndex": -1,
+      "categoryIndex": -1,
+      "primaryIndex": 0,
+      "creator": "CrimsonFang9",
+      "toolType": "NONE",
+      "flags": 0,
+      "location": 0,
+      "category": 4126835505
+    }
+  }
+}
