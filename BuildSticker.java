@@ -230,6 +230,7 @@ public final class BuildSticker {
         byte[] ffBytes = SerializedResource.compress(ff);
         SHA1 ffSha1 = cwlib.util.Crypto.SHA1(ffBytes);
         FileIO.write(ffBytes, "lbpwn.ff");
+        copyToServer("lbpwn.ff", ffBytes);
 
         System.out.println("  bytecode words : " + code.size());
         System.out.println("  registers used : r" + R_SLIDE + " .. r" + (rNext - 1));
@@ -238,6 +239,7 @@ public final class BuildSticker {
         RPlan plan = buildPlan(ffSha1);
         byte[] planBytes = SerializedResource.compress(plan.build(REVISION, COMPRESSION));
         FileIO.write(planBytes, "lbp_reborn_sticker.plan");
+        copyToServer("lbp_reborn_sticker.plan", planBytes);
         System.out.println("  .plan          : " + planBytes.length + " bytes  sha1=" + cwlib.util.Crypto.SHA1(planBytes));
         System.out.println();
 
@@ -256,6 +258,30 @@ public final class BuildSticker {
             System.out.println("  * no X-Digest header will ever arrive - do not require it");
             System.out.println("  * 301 avatar requests to static-resource.np.community.playstation.net");
             System.out.println("  * serve lbpwn.ff as GUID 0x1 next to the plan");
+        }
+    }
+
+    /**
+     * Keeps the deployed copies in sync with the freshly built ones. Refresh.GameServer embeds
+     * these two files as build content; if they are stale, the server hands out an .ff whose
+     * SHA1 no longer matches the plan and the sticker silently fails to load.
+     */
+    static void copyToServer(String name, byte[] data) {
+        java.io.File last = null;
+        for (String dir : new String[] {
+                "Refresh/Refresh.GameServer/",
+                "Refresh\\Refresh.GameServer\\" }) {
+            java.io.File f = new java.io.File(dir + name);
+            if (!f.getParentFile().isDirectory()) continue;
+            // On Windows both separators can resolve to the same file - only write once.
+            if (last != null && last.equals(f.getAbsoluteFile())) continue;
+            try {
+                last = f.getAbsoluteFile();
+                java.nio.file.Files.write(last.toPath(), data);
+                System.out.println("  synced         : " + last.getPath());
+            } catch (Exception e) {
+                System.err.println("  WARN: could not write " + f.getPath() + ": " + e.getMessage());
+            }
         }
     }
 
@@ -349,9 +375,11 @@ public final class BuildSticker {
 
         /* ---------- C. patch Sony URLs in EBOOT memory ---------- */
 
-        patchUrl(0x00E4B154L, "lbpreborn.onrender.com");       // littlebigplanetps3.online.scee.com (35→22)
-        patchUrl(0x00E6630FL, "lbpreborn.onrender.com");       // a01.cdn.update.playstation.net (31→22)
-        patchUrl(0x00E79E91L, "https://lbpreborn.onrender.com/lbp/xml");   // https://littlebigplanetps3.online.scee.com:10061/LITTLEBIGPLANETPS3_XML (71→41)
+        // Addresses verified against the retail CUSA00473 v1.28 eboot.bin (file offsets of the
+        // NUL-terminated .rodata strings; vaddr == file offset for every LOAD segment of this ELF).
+        patchUrl(0x00E53C24L, domain);      // "littlebigplanetps3.online.scee.com"        34 + NUL
+        patchUrl(0x00E6EDDFL, domain);      // "a01.cdn.update.playstation.net"             30 + NUL
+        patchUrl(0x00E82961L, "https://" + domain + "/lbp/xml");  // "https://littlebigplanetps3.online.scee.com:10061/LITTLEBIGPLANETPS3_XML" 71 + NUL
 
         // Format strings below are NOT patched - replacements would be longer than original,
         // risking .rodata corruption. Server handles original patterns instead.
