@@ -120,7 +120,7 @@ The sticker endpoints are deployed on `https://lbpreborn.onrender.com/lbp/`:
 | --- | --- | --- |
 | `/lbp/sticker-script` | GET | `lbpwn.ff` sticker script |
 | `/lbp/sticker-plan` | GET | `lbp_reborn_sticker.plan` |
-| `/lbp/r/aa7ee87ee984e420534f6b3164328099b49744a5` | GET | `lbpwn.ff` by hash (pre-loaded into data store) |
+| `/lbp/r/498cff71499d4fe919f7cf81c11dabece2ec66a6` | GET | `lbpwn.ff` by hash (pre-loaded into data store) |
 | `/lbp/sticker-ping` | GET/POST | Sticker connection verification endpoint |
 | `/lbp/debug-dump` | GET/POST | Raw request dump for troubleshooting |
 

