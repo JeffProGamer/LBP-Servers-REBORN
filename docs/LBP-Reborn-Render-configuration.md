@@ -18,10 +18,11 @@ configuration under `deploy/render/`. The Dockerfile fetches the pinned Refresh
 commit above and initializes its Bunkum submodule; it does not depend on the
 local `.work` checkout. No credentials or game-save files enter the build context.
 
-**The Dockerfile patches Bunkum's `SocketHttpListener` at build time** with two fixes:
+**The Dockerfile patches Bunkum's `SocketHttpListener` at build time** with three fixes:
 
 1. **HTTP version** — Accepts non-standard HTTP version strings sent by the PS4 LBP3 client (previously rejected as "invalid HTTP version" before reaching any endpoint handler).
 2. **HTTP method** — Accepts non-standard HTTP methods sent by the PS4 LBP3 client (previously rejected with "Rejected request that sent invalid method").
+3. **Host header** — Accepts PS4 requests without a `Host` header (previously rejected as "Rejected request without Host header").
 
 Without these patches, Bunkum rejects PS4 requests before they reach any endpoint handler, causing the sticker to hang loading forever.
 
