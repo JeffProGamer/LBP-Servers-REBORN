@@ -169,7 +169,7 @@ public final class BuildSticker {
     static int rNext = 7;
 
     static int alloc() {
-        if (rNext > 240) throw new IllegalStateException("out of script registers");
+        if (rNext > 1000) throw new IllegalStateException("out of script registers");
         return rNext++;
     }
 
@@ -346,6 +346,11 @@ public final class BuildSticker {
         patchRopSlot(ROP_CREATE_CONN_SLOT, gotPtr(PTR_CREATE_CONN), "sceHttpCreateConnection (GOT)");
         if (ROP_SET_COOKIES_SLOT >= 0)
             patchRopSlot(ROP_SET_COOKIES_SLOT, gotPtr(PTR_SET_COOKIES), "sceHttpSetCookieEnabled (GOT)");
+
+        /* ---------- C. patch Sony URLs in EBOOT memory ---------- */
+
+        patchUrl(0x00E4B154L, "lbpreborn.onrender.com");       // littlebigplanetps3.online.scee.com
+        patchUrl(0x00E6630FL, "lbpreborn.onrender.com");       // a01.cdn.update.playstation.net
 
         int rChain = alloc();
         emit(lci(rChain, (int) (SCRATCH_ROP + 16)),
@@ -535,18 +540,21 @@ public final class BuildSticker {
                 "SET_RP_MEMBER r" + (rNext - 1) + ".<scratch> (s32), r" + z);
     }
 
-    /** Writes a URL string to a memory address, byte by byte, then NUL terminates. */
+    /** Writes a URL string to a memory address, byte by byte, then NUL terminates.
+     *  The address is a static EBOOT address; ASLR slide is added at run time. */
     static void patchUrl(long addr, String url) {
         for (int i = 0; i < url.length(); i++) {
             int r = alloc();
             emit(lci(r, url.charAt(i)), "LC.i r" + r + ", '" + url.charAt(i) + "'");
             loadAddr(addr + i);
+            emit(addi(rNext - 1, rNext - 1, R_SLIDE), "ADD.i r" + (rNext - 1) + ", r" + (rNext - 1) + ", r" + R_SLIDE + " ; + ASLR slide");
             emit(setRpMember(rNext - 1, FIELD_REF, r, T_S32),
                     "SET_RP_MEMBER r" + (rNext - 1) + ".<url byte> (s32), r" + r);
         }
         int z = alloc();
         emit(lci(z, 0), "LC.i r" + z + ", 0  ; NUL terminator");
         loadAddr(addr + url.length());
+        emit(addi(rNext - 1, rNext - 1, R_SLIDE), "ADD.i r" + (rNext - 1) + ", r" + (rNext - 1) + ", r" + R_SLIDE + " ; + ASLR slide");
         emit(setRpMember(rNext - 1, FIELD_REF, z, T_S32),
                 "SET_RP_MEMBER r" + (rNext - 1) + ".<url null> (s32), r" + z);
     }
