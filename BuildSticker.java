@@ -349,8 +349,17 @@ public final class BuildSticker {
 
         /* ---------- C. patch Sony URLs in EBOOT memory ---------- */
 
-        patchUrl(0x00E4B154L, "lbpreborn.onrender.com");       // littlebigplanetps3.online.scee.com
-        patchUrl(0x00E6630FL, "lbpreborn.onrender.com");       // a01.cdn.update.playstation.net
+        patchUrl(0x00E4B154L, "lbpreborn.onrender.com");       // littlebigplanetps3.online.scee.com (35→22)
+        patchUrl(0x00E6630FL, "lbpreborn.onrender.com");       // a01.cdn.update.playstation.net (31→22)
+        patchUrl(0x00E79E91L, "https://lbpreborn.onrender.com/lbp/xml");   // https://littlebigplanetps3.online.scee.com:10061/LITTLEBIGPLANETPS3_XML (71→41)
+
+        // Format strings below are NOT patched - replacements would be longer than original,
+        // risking .rodata corruption. Server handles original patterns instead.
+        // 0x00E79ED9: https://res%c.%s/r/%s
+        // 0x00E79EEF: http://%s/r/%s
+        // 0x00E91997: http://lbp.me/v/%s
+        // 0x00E919AA: http://beta.lbp.me/v/%s
+        // 0x00ED7DB2: https://auth.lbp.me/auth/signin?r=http://lbp.me/
 
         int rChain = alloc();
         emit(lci(rChain, (int) (SCRATCH_ROP + 16)),
