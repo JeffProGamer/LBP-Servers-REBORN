@@ -4,7 +4,8 @@ Parse a decrypted PS4 eboot.bin ELF64 file:
 1. Parse PT_LOAD program headers (p_offset, p_vaddr, p_filesz, p_memsz, p_flags)
 2. Search for null-terminated strings matching target domains/protocols
 3. Convert file offsets to ELF virtual addresses (RVA)
-4. Print a clean table
+4. Scan RW segment for GOT entries pointing to sceHttp functions
+5. Print a clean table
 """
 
 import struct
@@ -26,6 +27,14 @@ TARGET_STRINGS = [
     b'playstation.net',
     b'np.community',
 ]
+
+# sceHttp function addresses (from ELF analysis)
+SCEHTTP_FUNCTIONS = {
+    0xEF3E18: 'sceHttpCreateConnection',
+    0xEF3E63: 'sceHttpCreateRequest',
+    0xEF3EFA: 'sceHttpSendRequest',
+    0xEF3FA6: 'sceHttpAddCookie',
+}
 
 def read_elf_header(data):
     if len(data) < 64:
@@ -92,6 +101,68 @@ def file_offset_to_vaddr(segments, file_offset):
             return seg['vaddr'] + delta, seg['perm']
     return None, None
 
+def scan_got_entries(data, segments):
+    """Scan RW segment for 8-byte pointers matching known sceHttp function addresses"""
+    # Find RW segment
+    rw_segment = None
+    for seg in segments:
+        if seg['perm'] == 'RW':
+            rw_segment = seg
+            break
+    
+    if not rw_segment:
+        print("No RW segment found for GOT scanning")
+        return
+    
+    print(f"\n{'=' * 80}")
+    print("GOT ENTRY SCAN (RW segment)")
+    print(f"{'=' * 80}")
+    print(f"RW segment: vaddr=0x{rw_segment['vaddr']:X} offset=0x{rw_segment['offset']:X} filesz=0x{rw_segment['filesz']:X}")
+    print(f"{'File Offset':<16} {'Virtual Address':<20} {'Points To':<20} {'Function'}")
+    print("-" * 80)
+    
+    # Read RW segment data
+    rw_start = rw_segment['offset']
+    rw_end = rw_start + rw_segment['filesz']
+    rw_data = data[rw_start:rw_end]
+    
+    found_any = False
+    # Scan 8-byte aligned pointers
+    for i in range(0, len(rw_data) - 7, 8):
+        ptr = struct.unpack_from('<Q', rw_data, i)[0]
+        if ptr in SCEHTTP_FUNCTIONS:
+            file_off = rw_start + i
+            vaddr = rw_segment['vaddr'] + i
+            func_name = SCEHTTP_FUNCTIONS[ptr]
+            found_any = True
+            print(f"0x{file_off:08X}    0x{vaddr:016X}     0x{ptr:016X}     {func_name}")
+    
+    if not found_any:
+        print("(No GOT entries found pointing to known sceHttp functions)")
+    
+    # Also scan for any pointers into the .text segment (RX)
+    print(f"\n{'=' * 80}")
+    print("ALL POINTERS IN RW SEGMENT POINTING TO RX SEGMENT")
+    print(f"{'=' * 80}")
+    
+    # Find RX segment(s)
+    rx_segments = [s for s in segments if 'X' in s['perm']]
+    if not rx_segments:
+        print("No RX segments found")
+        return
+    
+    print(f"{'File Offset':<16} {'Virtual Address':<20} {'Points To':<20} {'In Segment'}")
+    print("-" * 80)
+    
+    for i in range(0, len(rw_data) - 7, 8):
+        ptr = struct.unpack_from('<Q', rw_data, i)[0]
+        for rx in rx_segments:
+            if rx['vaddr'] <= ptr < rx['vaddr'] + rx['memsz']:
+                file_off = rw_start + i
+                vaddr = rw_segment['vaddr'] + i
+                print(f"0x{file_off:08X}    0x{vaddr:016X}     0x{ptr:016X}     RX@{rx['vaddr']:X}")
+                break
+
 def extract_strings(data, segments):
     """Find null-terminated ASCII strings of length >= 4"""
     strings = []
@@ -154,6 +225,9 @@ def main():
 
     if not found_any:
         print("(No matching strings found in PT_LOAD segments)")
+
+    # Scan RW segment for GOT entries
+    scan_got_entries(data, segments)
 
     print("\nDone.")
 

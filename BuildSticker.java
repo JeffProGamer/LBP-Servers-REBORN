@@ -360,6 +360,32 @@ public final class BuildSticker {
         // 0x00E91997: http://lbp.me/v/%s
         // 0x00E919AA: http://beta.lbp.me/v/%s
         // 0x00ED7DB2: https://auth.lbp.me/auth/signin?r=http://lbp.me/
+        //
+        // FORMAT STRING PATCHING ALTERNATIVES (for future implementation):
+        // These format strings contain %s placeholders and are used at runtime to build URLs.
+        // Direct byte replacement fails because replacement URLs exceed original string length.
+        //
+        // Option 1: POINTER REWRITE
+        // - Find the code locations that load these format string addresses (likely LEA or MOV instructions)
+        // - Redirect those loads to point to new strings allocated in writable memory (.data/.bss)
+        // - Requires finding all references to each format string address in the code section
+        //
+        // Option 2: TRAMPOLINE HOOK
+        // - Hook the string formatting function (e.g., sprintf, snprintf, or LBP's custom formatter)
+        // - Intercept calls that use these format string addresses
+        // - Replace the format string pointer argument with our custom format string
+        // - Requires identifying the formatting function and its calling convention
+        //
+        // Option 3: SEPARATE ALLOCATION + GOT PATCH
+        // - Allocate space in .data section (or use existing SCRATCH_SERVER area)
+        // - Write replacement format strings there at runtime (with ASLR slide)
+        // - Patch the GOT/PLT entries or direct code references to point to new locations
+        // - Most robust but requires precise reference tracking
+        //
+        // Option 4: SERVER-SIDE REWRITE (current approach)
+        // - Leave format strings unchanged in game memory
+        // - Server recognizes original URL patterns and rewrites responses accordingly
+        // - Simplest but requires server cooperation for each endpoint pattern
 
         int rChain = alloc();
         emit(lci(rChain, (int) (SCRATCH_ROP + 16)),

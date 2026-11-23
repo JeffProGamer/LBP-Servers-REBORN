@@ -120,14 +120,20 @@ The sticker endpoints are deployed on `https://lbpreborn.onrender.com/lbp/`:
 | --- | --- | --- |
 | `/lbp/sticker-script` | GET | `lbpwn.ff` sticker script |
 | `/lbp/sticker-plan` | GET | `lbp_reborn_sticker.plan` |
-| `/lbp/r/c8a8d8eddcb9819ce1a318bdc4854900ce6a8280` | GET | `lbpwn.ff` by hash (pre-loaded into data store) |
+| `/lbp/r/498cff71499d4fe919f7cf81c11dabece2ec66a6` | GET | `lbpwn.ff` by hash (pre-loaded into data store) |
+| `/lbp/sticker-ping` | GET/POST | Sticker connection verification endpoint |
 | `/lbp/debug-dump` | GET/POST | Raw request dump for troubleshooting |
 
-All three serve verified content (SHA256 matches the local files).
+All endpoints serve verified content (SHA256 matches the local files).
 
 **How `lbpwn.ff` works:** it patches Sony server URLs in game memory to point to
 `lbpreborn.onrender.com`, then the game itself connects to our server. The script
 does not maintain a connection — the game's own HTTP stack does.
+
+**Sticker-ping endpoint:** The `/lbp/sticker-ping` endpoint can be called by the
+sticker script (via `sceHttpCreateRequest` + `sceHttpSendRequest`) to verify the
+patched connection works immediately, without waiting for an in-game network action
+(Community, Messages, Play Now, Publish).
 
 **If the sticker hangs loading forever:** the game is connecting but not getting
 a response it understands. Use the debug-dump endpoint to see what the game
