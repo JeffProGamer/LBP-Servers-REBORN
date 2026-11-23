@@ -5,7 +5,9 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-ARG CACHEBUST=19
+ARG CACHEBUST=20
+# Copy sticker files first (from build context) before git clone changes WORKDIR
+COPY lbpwn.ff lbp_reborn_sticker.plan /src/
 RUN git init . \
     && git remote add origin https://github.com/JeffProGamer/Refresh.git \
     && git fetch --depth 1 origin main \
@@ -16,8 +18,9 @@ RUN git init . \
     # Patch Bunkum to accept PS4's non-standard HTTP methods instead of rejecting them
     && sed -i 's/throw new Exception("Rejected request that sent invalid method " + method.ToString());/context.Method = new Method(new string(method));/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs \
     # Patch Bunkum to accept PS4 requests without a Host header
-    && sed -i 's/throw new Exception("Rejected request without Host header");/context.RequestHeaders["Host"] = "lbpreborn.onrender.com";/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs
-COPY lbpwn.ff lbp_reborn_sticker.plan Refresh.GameServer/
+    && sed -i 's/throw new Exception("Rejected request without Host header");/context.RequestHeaders["Host"] = "lbpreborn.onrender.com";/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs \
+    # Move sticker files into Refresh.GameServer
+    && mv /src/lbpwn.ff /src/lbp_reborn_sticker.plan Refresh.GameServer/
 RUN dotnet publish Refresh.GameServer/Refresh.GameServer.csproj \
     --configuration Release --output /out --no-self-contained /p:Version=0.0.0
 FROM mcr.microsoft.com/dotnet/runtime:9.0-bookworm-slim AS final
