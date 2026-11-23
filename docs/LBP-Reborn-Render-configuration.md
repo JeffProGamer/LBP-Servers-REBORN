@@ -18,6 +18,11 @@ configuration under `deploy/render/`. The Dockerfile fetches the pinned Refresh
 commit above and initializes its Bunkum submodule; it does not depend on the
 local `.work` checkout. No credentials or game-save files enter the build context.
 
+**The Dockerfile patches Bunkum's `SocketHttpListener` at build time** to accept
+non-standard HTTP version strings sent by the PS4 LBP3 client. Without this
+patch, Bunkum rejects PS4 requests with "invalid HTTP version" warnings before
+they reach any endpoint handler, causing the sticker to hang loading forever.
+
 Commit and push these deployment files to `JeffProGamer/LBP-Servers-REBORN`,
 then configure your existing Render service:
 
