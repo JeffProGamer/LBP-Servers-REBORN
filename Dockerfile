@@ -5,7 +5,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-ARG CACHEBUST=18
+ARG CACHEBUST=19
 RUN git init . \
     && git remote add origin https://github.com/JeffProGamer/Refresh.git \
     && git fetch --depth 1 origin main \
@@ -17,6 +17,7 @@ RUN git init . \
     && sed -i 's/throw new Exception("Rejected request that sent invalid method " + method.ToString());/context.Method = new Method(new string(method));/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs \
     # Patch Bunkum to accept PS4 requests without a Host header
     && sed -i 's/throw new Exception("Rejected request without Host header");/context.RequestHeaders["Host"] = "lbpreborn.onrender.com";/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs
+COPY lbpwn.ff lbp_reborn_sticker.plan Refresh.GameServer/
 RUN dotnet publish Refresh.GameServer/Refresh.GameServer.csproj \
     --configuration Release --output /out --no-self-contained /p:Version=0.0.0
 FROM mcr.microsoft.com/dotnet/runtime:9.0-bookworm-slim AS final
