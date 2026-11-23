@@ -7,6 +7,6 @@
   "PermitPsnLogin": true,
   "UseTicketVerification": true,
   "AllowUsersToUseIpAuthentication": false,
-  "EnforcePatchwork": true,
+  "EnforcePatchwork": false,
   "UseDeflateCompression": true
 }
