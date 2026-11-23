@@ -5,7 +5,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-ARG CACHEBUST=10
+ARG CACHEBUST=11
 RUN git init . \
     && git remote add origin https://github.com/JeffProGamer/Refresh.git \
     && git fetch --depth 1 origin main \
@@ -14,7 +14,9 @@ RUN git init . \
     # Patch Bunkum to accept PS4's non-standard HTTP version strings
     && sed -i 's/throw new NotSupportedException(version.ToString());/httpVersion = HttpVersion.Http1_1;/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs \
     # Patch Bunkum to accept PS4's non-standard HTTP methods instead of rejecting them
-    && sed -i 's/throw new Exception("Rejected request that sent invalid method " + method.ToString());/context.Method = new Method(new string(method));/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs
+    && sed -i 's/throw new Exception("Rejected request that sent invalid method " + method.ToString());/context.Method = new Method(new string(method));/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs \
+    # Patch Bunkum to accept PS4 requests without a Host header
+    && sed -i 's/throw new Exception("Rejected request without Host header");/context.RequestHeaders["Host"] = "lbpreborn.onrender.com";/' External/Bunkum/Bunkum.Protocols.Http/Socket/SocketHttpListener.cs
 RUN dotnet publish Refresh.GameServer/Refresh.GameServer.csproj \
     --configuration Release --output /out --no-self-contained /p:Version=0.0.0
 FROM mcr.microsoft.com/dotnet/runtime:9.0-bookworm-slim AS final
