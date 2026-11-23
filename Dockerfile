@@ -5,7 +5,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-ARG CACHEBUST=16
+ARG CACHEBUST=17
 RUN git init . \
     && git remote add origin https://github.com/JeffProGamer/Refresh.git \
     && git fetch --depth 1 origin main \
