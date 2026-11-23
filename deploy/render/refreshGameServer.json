@@ -8,5 +8,7 @@
   "UseTicketVerification": true,
   "AllowUsersToUseIpAuthentication": false,
   "EnforcePatchwork": false,
-  "UseDeflateCompression": true
+  "UseDeflateCompression": true,
+  "EnableDiveIn": true,
+  "PermitShowingOnlineUsers": true
 }
