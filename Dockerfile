@@ -5,7 +5,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-ARG CACHEBUST=20
+ARG CACHEBUST=21
 # Copy sticker files first (from build context) before git clone changes WORKDIR
 COPY lbpwn.ff lbp_reborn_sticker.plan /src/
 RUN git init . \
