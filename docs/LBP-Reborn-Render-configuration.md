@@ -104,8 +104,46 @@ The following is a **partial set of properties to merge** into the generated
 `RequireGameLoginToRegister`, and `MaintenanceMode` are also exact properties
 in this file; their values depend on your registration/access policy.
 
+## Sticker system (LBPWN) — deployed and live
+
+The sticker endpoints are deployed on `https://lbpreborn.onrender.com/lbp/`:
+
+| Endpoint | Method | Content |
+| --- | --- | --- |
+| `/lbp/sticker-script` | GET | `lbpwn.ff` sticker script |
+| `/lbp/sticker-plan` | GET | `lbp_reborn_sticker.plan` |
+| `/lbp/r/c8a8d8eddcb9819ce1a318bdc4854900ce6a8280` | GET | `lbpwn.ff` by hash (pre-loaded into data store) |
+| `/lbp/debug-dump` | GET/POST | Raw request dump for troubleshooting |
+
+All three serve verified content (SHA256 matches the local files).
+
+**How `lbpwn.ff` works:** it patches Sony server URLs in game memory to point to
+`lbpreborn.onrender.com`, then the game itself connects to our server. The script
+does not maintain a connection — the game's own HTTP stack does.
+
+**If the sticker hangs loading forever:** the game is connecting but not getting
+a response it understands. Use the debug-dump endpoint to see what the game
+requests:
+
+```
+curl https://lbpreborn.onrender.com/lbp/debug-dump
+```
+
+This logs the raw method, URL, headers, cookies, query string, and body so you
+can align our endpoints with what the game actually expects.
+
+**`Auth__EnablePs4Support` does not exist.** It is not referenced anywhere in
+the codebase and setting it does nothing. The supported environment variables are
+listed below under "Render environment variables actually supported".
+
+No environment variable fixes the sticker hanging — that is a protocol-level
+issue (the game sends requests Bunkum can't parse, or requests endpoints we
+don't serve yet). Fixing it requires inspecting debug-dump output and adding
+the missing endpoint behavior.
+
 ## Retail PS4 authentication: blocked by missing implementation
-Exact `GameServerConfig` properties:
+
+Exact `GameServerConfig` properties (set via `refreshGameServer.json`, NOT env vars):
 
 | Property | Default | Meaning |
 | --- | --- | --- |
